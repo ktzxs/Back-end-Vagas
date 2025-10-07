@@ -1,0 +1,28 @@
+{
+  "name": "back-end-vagas",
+  "version": "1.0.0",
+  "description": "Projeto de busca de vagas DEV front-end bootstrap body-parser e handlebars.Back-end express sequelize sqlite. Formulario web  de cadastros de vaga",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "vagas",
+    "DEV",
+    "remoto",
+    "home-office"
+  ],
+  "author": "Lucas alves da costa",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.1",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
