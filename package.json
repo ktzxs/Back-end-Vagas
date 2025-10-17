@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Projeto de busca de vagas DEV front-end bootstrap body-parser e handlebars.Back-end express sequelize sqlite. Formulario web  de cadastros de vaga",
   "main": "app.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon app.js"
   },

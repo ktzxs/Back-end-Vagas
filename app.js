@@ -1,44 +1,48 @@
-import express from 'express';
-import { engine } from 'express-handlebars';
-import db from './db/connection.js';
-import bodyParser from 'body-parser';
-import jobsRoutes from './routes/jobs.js';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const express = require('express');
+const { engine } = require('express-handlebars');
+const bodyParser = require('body-parser');
+const path = require('path');
+const db = require('./db/connection');
+const jobsRoutes = require('./routes/jobs');
+const Job = require('./models/Job');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const app = express();
-
 const PORT = 3000;
 
-app.listen(PORT, function () {
-    console.log(`O express está rodando na porta http://localhost:${PORT}`)
-});
-
+// Body parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//handlebars
-app.set('views', path.join(__dirname, 'views'));
+// Handlebars
 app.engine('handlebars', engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
 
-//static folder
+// Static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-db
-    .authenticate()
+// Banco de dados
+db.authenticate()
+    .then(() => console.log('Conectou ao banco com sucesso'))
+    .catch(err => console.log('Ocorreu um erro ao conectar', err));
 
-    .then(() => {
-        console.log('Conectou ao banco com sucesso')
-    })
-
-    .catch(err => {
-        console.log('Ocorre um erro ao conectar', err);
-    });
-
+// Rotas
 app.get('/', (req, res) => {
-    res.render('index');
+    const search = req.query.job;
+    const query = `%${search || ''}%`;
+
+    const findOptions = { order: [['createdAt', 'DESC']] };
+    if (search) findOptions.where = { title: { [Op.like]: query } };
+
+    Job.findAll(findOptions)
+        .then(jobs => res.render('index', { jobs, search }))
+        .catch(err => console.log(err));
 });
 
 app.use('/jobs', jobsRoutes);
+
+// Servidor
+app.listen(PORT, () => {
+    console.log(`O Express está rodando na porta http://localhost:${PORT}`);
+});
